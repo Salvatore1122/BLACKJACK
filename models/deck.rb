@@ -11,4 +11,10 @@ class Deck
   def initialize
     @cards = CARD_FACES.product(CARD_MARKS)
   end
+
+  # @param [Integer] card_count
+  # @return [Array<Array<String, String>>]
+  def draw_and_remove_cards(card_count: 1)
+    @cards.sample(card_count).tap { |drawn_cards| @cards.delete(drawn_cards) }
+  end
 end

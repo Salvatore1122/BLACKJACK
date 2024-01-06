@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Game
+  # スコアに関する定数
   CARD_MARK_SCORE_MAP = {
     'A' => 1,
     '2' => 2,
@@ -16,10 +17,16 @@ class Game
     'Q' => 10,
     'K' => 10
   }.freeze
-  BLACK_JACK_NUM = 21
+  OTHER_A_SCORE = 11
+  BLACK_JACK_SCORE= 21
   MIN_DEALER_SCORE = 17
+
+  # プレイヤーに関する定数
   MIN_PLAYER_COUNT = 2
   MAX_PLAYER_COUNT = 4
+
+  # 手札に関する定数
+  DEFAULT_HAND_SIZE = 2
 
   # @param [Deck] deck
   # @param [Player] manual_player
@@ -37,7 +44,7 @@ class Game
 
     # プレイヤーとディーラーにカードを2枚ずつ配る
     [@manual_player, *@other_players, @dealer].each do |player|
-      @deck.delete(player.draw_card(deck: @deck, draw_count: 2))
+      player.draw_cards_from(deck: @deck, draw_count: DEFAULT_HAND_SIZE)
     end
   end
 
@@ -55,8 +62,8 @@ class Game
         next
       end
 
-      @deck.delete(@manual_player.draw_card(deck: @deck))
-      @manual_player.show_card(@manual_player.hand.size)
+      @manual_player.draw_cards_from(deck: @deck)
+      @manual_player.show_card_at(@manual_player.hand.size)
 
       if @manual_player.burst?
         puts "バーストしました。\n"
@@ -67,24 +74,22 @@ class Game
     # 他のプレイヤーのターン
     @other_players.each do |player|
       loop do
-        @deck.delete(player.draw_card(deck: @deck))
+        # ブラックジャック or バースト or (ランダムで)スタンド でターン終了
+        break if player.blackjack? || player.burst? || player.stand_randomly?
 
-        # 以下条件でターン終了
-        # * バーストした
-        # * ブラックジャックに達する前にランダム(乱数が偶数の時)
-        break if player.burst? || (player.score <= BLACK_JACK_NUM && rand(10).even?)
+        player.draw_cards_from(deck: @deck)
       end
     end
   end
 
   def advance_dealer_turn
     while @dealer.score < MIN_DEALER_SCORE
-      @dealer.show_card(@dealer.hand.size)
+      @dealer.show_card_at(@dealer.hand.size)
       @dealer.show_score
 
-      @deck.delete(@dealer.draw_card(deck: @deck))
+      @dealer.draw_cards_from(deck: @deck)
 
-      @dealer.show_card(@dealer.hand.size)
+      @dealer.show_card_at(@dealer.hand.size)
     end
   end
 
@@ -94,7 +99,7 @@ class Game
       puts "プレイヤーが全員バーストしたため、#{@dealer.name}の勝ちです。\n"
     else
       winner = [@manual_player, *@other_players, @dealer].select do |player|
-        player.score <= BLACK_JACK_NUM
+        player.score <= BLACK_JACK_SCORE
       end.max_by(&:score)
       puts "#{winner.name}の勝ちです。\n"
     end

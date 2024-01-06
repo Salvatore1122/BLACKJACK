@@ -17,25 +17,29 @@ end
 # 操作者とディーラー以外のプレイヤーを作成
 other_players = (player_count - 2).times.map { |i| Player.new(name: "プレイヤー#{i + 1}") }
 dealer = Player.new(is_dealer: true)
-deck = Deck.new.cards
-game = Game.new(deck: deck, manual_player: you, other_players: other_players, dealer: dealer)
+game = Game.new(
+  deck: Deck.new,
+  manual_player: you,
+  other_players: other_players,
+  dealer: dealer
+)
 
 # ゲーム開始
 # * 全員にカードを2枚ずつ配り、操作者の手札とスコア開示
 # * ディーラーは1枚目のカードのみ開示
 game.start
 
-you.hand.each.with_index(1) { |_, i| you.show_card(i) }
+you.hand.each.with_index(1) { |_, i| you.show_card_at(i) }
 you.show_score
 
-dealer.show_card(1)
+dealer.show_card_at(1)
 puts "ディーラーの引いた2枚目のカードは分かりません。\n"
 
 # プレイヤーのターンを進行
 game.advance_players_turn
 
 # ディーラーのターン進行
-is_all_burst = you.burst? && other_players.all?(&:burst?)
+is_all_burst = [you, *other_players].all?(&:burst?)
 game.advance_dealer_turn unless is_all_burst
 
 # 全員のスコア開示と勝者の発表
