@@ -18,7 +18,7 @@ class Game
     'K' => 10
   }.freeze
   OTHER_A_SCORE = 11
-  BLACK_JACK_SCORE= 21
+  BLACK_JACK_SCORE = 21
   MIN_DEALER_SCORE = 17
 
   # プレイヤーに関する定数
