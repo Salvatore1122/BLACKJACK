@@ -20,3 +20,9 @@
   * ex2. Deck::draw_and_remove_cards -> カードを引いた後、引いたカードをデッキから削除する
 * 数値は全て定数化
   * 基本的にブラックジャックのルールが変わらない限り変更されることはないので定数化の必要性は低いですが、定数化することで可読性を高めています
+
+## 実行方法
+```
+$ docker compoese build
+$ docker compose run app ruby main.rb
+```
