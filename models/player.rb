@@ -47,8 +47,8 @@ class Player
 
   # @param [Integer] hand_index
   def show_card_at(hand_index)
-    card_face, card_mark = hand[hand_index - 1]
-    puts "#{name}の引いた#{hand_index}枚目のカードは#{card_face}の#{card_mark}です。\n"
+    card_suit, card_mark = hand[hand_index - 1]
+    puts "#{name}の引いた#{hand_index}枚目のカードは#{card_suit}の#{card_mark}です。\n"
   end
 
   def show_score
