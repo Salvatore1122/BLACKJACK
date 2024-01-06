@@ -8,7 +8,7 @@ you = Player.new(name: gets.chomp)
 puts "プレイヤー人数を入力してください。\n"
 player_count = gets.chomp.to_i
 loop do
-  break if player_count >= Game::MIN_PLAYER_COUNT && player_count <= Game::MAX_PLAYER_COUNT
+  break if Game::MIN_PLAYER_COUNT <= player_count && player_count <= Game::MAX_PLAYER_COUNT
 
   puts "プレイヤー人数は#{Game::MIN_PLAYER_COUNT}人から#{Game::MAX_PLAYER_COUNT}人です。再度入力してください。\n"
   player_count = gets.chomp.to_i
